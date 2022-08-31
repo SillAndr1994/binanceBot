@@ -1,32 +1,37 @@
 package candles;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 /**
  * The class describes the candle
  */
-public class Candle {
+public class Candle implements CandleComparable{
     private double open;
     private double close;
     private double high;
     private double low;
     private double volume;
-    private long openTIme;
-    private long closeTime;
+    private Date openTIme;
+    private Date closeTime;
     private String candleType;
     private double bodySize;
-
+    private double topShadowSize;
+    private double bottomShadowSize;
     public Candle(double open, double close, double high, double low, double volume, long openTIme, long closeTime) {
         this.open = open;
         this.close = close;
         this.high = high;
         this.low = low;
         this.volume = volume;
-        this.openTIme = openTIme;
-        this.closeTime = closeTime;
+        this.openTIme = new Date(new Timestamp(openTIme).getTime());
+        this.closeTime = new Date(new Timestamp(closeTime).getTime());
         this.candleType = candleTypeCalc();
         this.bodySize = Math.abs(this.close - this.open);
+        this.topShadowSize = Math.abs(this.high - this.close);
+        this.bottomShadowSize = Math.abs(this.open - this.low);
     }
 
 
@@ -36,10 +41,12 @@ public class Candle {
         this.high = high.doubleValue();
         this.low = low.doubleValue();
         this.volume = volume.doubleValue();
-        this.openTIme = openTIme;
-        this.closeTime = closeTime;
+        this.openTIme = new Date(new Timestamp(openTIme).getTime());
+        this.closeTime = new Date(new Timestamp(closeTime).getTime());
         this.candleType = candleTypeCalc();
         this.bodySize = Math.abs(this.close - this.open);
+        this.topShadowSize = Math.abs(this.high - this.close);
+        this.bottomShadowSize = Math.abs(this.open - this.low);
     }
 
 
@@ -111,11 +118,11 @@ public class Candle {
         return volume;
     }
 
-    public long getOpenTIme() {
+    public Date getOpenTIme() {
         return openTIme;
     }
 
-    public long getCloseTime() {
+    public Date getCloseTime() {
         return closeTime;
     }
 
@@ -125,5 +132,25 @@ public class Candle {
 
     public double getBodySize() {
         return bodySize;
+    }
+
+    public double getTopShadowSize() {
+        return topShadowSize;
+    }
+
+    public double getBottomShadowSize() {
+        return bottomShadowSize;
+    }
+
+    @Override
+    public boolean compare(Candle candle) {
+        boolean result = false;
+
+        if (this.candleType.equals("bull") && candle.candleType.equals("bear") && this.bottomShadowSize < this.bodySize
+                && this.volume >= candle.volume * 2 && this.bodySize < this.bodySize * 15 && this.close > candle.open) {
+            result = true;
+        }
+
+        return result;
     }
 }

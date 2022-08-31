@@ -1,3 +1,5 @@
+package runner;
+
 import com.binance4j.core.exception.ApiException;
 import com.binance4j.core.market.CandlestickInterval;
 import com.binance4j.market.client.MarketDataClient;
@@ -5,6 +7,8 @@ import com.binance4j.market.tickerstatistics.TickerStatistics;
 import com.binance4j.websocket.client.WebsocketCandlestickClient;
 import services.Auth;
 import services.ServiceFunctions;
+import services.TradingStrategy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,27 +16,20 @@ import java.util.List;
 
 public class BotRunner {
     public static void main(String[] args) {
-        CandlestickInterval interval = CandlestickInterval.ONE_MINUTE;
+        CandlestickInterval interval = CandlestickInterval.FIVE_MINUTES;
 
         WebsocketCandlestickClient client = new WebsocketCandlestickClient("BTCUSDT".toUpperCase(), interval);
 
         client.onMessage(cb -> {
             if (cb.getIsBarFinal()) {
                 ArrayList<String> growCoins = getGrowCoins(3);
-
-                if (growCoins.size() != 0) {
-
-                }
+                System.out.println(growCoins);
+                TradingStrategy strategy = new TradingStrategy(interval);
+                ArrayList<String> processedSymbols = strategy.checkTradingRules(growCoins);
+                System.out.println(processedSymbols);
             }
         });client.open();
     }
-
-    private static void checkingTradingRules(ArrayList<String> symbols) {
-        for (String symbol : symbols) {
-            System.out.println(symbol);
-        }
-    }
-
 
 
     /**

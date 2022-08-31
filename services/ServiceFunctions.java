@@ -66,15 +66,15 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol, interval, 3)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
 
         List<CandlestickBar> candlestickBars = new ArrayList<>();
 
-        CandlestickBar lc = klines.get(klines.size()-3);
-        CandlestickBar pc = klines.get(klines.size()-2);
+        CandlestickBar lc = klines.get(klines.size()-2);
+        CandlestickBar pc = klines.get(klines.size()-3);
 
         List<Candle> candles = new ArrayList<>();
 
@@ -128,12 +128,12 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval, 3)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
 
-        CandlestickBar lc = klines.get(klines.size()-3);
+        CandlestickBar lc = klines.get(klines.size()-2);
         Candle latestCandle = new Candle(lc.getOpen(), lc.getClose(), lc.getHigh(), lc.getLow(), lc.getVolume(), lc.getOpenTime(), lc.getCloseTime());
 
         return latestCandle;
@@ -152,12 +152,12 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval, 3)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
 
-        CandlestickBar pc = klines.get(klines.size()-2);
+        CandlestickBar pc = klines.get(klines.size()-3);
         Candle previousCandle = new Candle(pc.getOpen(), pc.getClose(), pc.getHigh(), pc.getLow(), pc.getVolume(), pc.getOpenTime(), pc.getCloseTime());
 
         return previousCandle;
@@ -212,7 +212,6 @@ public class ServiceFunctions {
     /**
      * rounding value for a specific coin per binance
      * @param symbol coin symbol
-     * @param interval coin interval
      * @param value value for rounding
      * @return double rounded number
      */
@@ -227,5 +226,10 @@ public class ServiceFunctions {
         double result = Double.valueOf(decimalFormat.format(value));
 
         return result;
+    }
+
+    public static void main(String[] args) {
+        double ema = getLatestCandleEmaValue(CandlestickInterval.DAILY, "BTCUSDT");
+        System.out.println(ema);
     }
 }
