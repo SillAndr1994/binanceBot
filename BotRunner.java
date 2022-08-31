@@ -28,8 +28,11 @@ public class BotRunner {
     }
 
     private static void checkingTradingRules(ArrayList<String> symbols) {
-        System.out.println();
+        for (String symbol : symbols) {
+            System.out.println(symbol);
+        }
     }
+
 
 
     /**

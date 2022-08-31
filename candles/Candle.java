@@ -14,6 +14,8 @@ public class Candle {
     private double volume;
     private long openTIme;
     private long closeTime;
+    private String candleType;
+    private double bodySize;
 
     public Candle(double open, double close, double high, double low, double volume, long openTIme, long closeTime) {
         this.open = open;
@@ -23,6 +25,8 @@ public class Candle {
         this.volume = volume;
         this.openTIme = openTIme;
         this.closeTime = closeTime;
+        this.candleType = candleTypeCalc();
+        this.bodySize = Math.abs(this.close - this.open);
     }
 
 
@@ -34,6 +38,30 @@ public class Candle {
         this.volume = volume.doubleValue();
         this.openTIme = openTIme;
         this.closeTime = closeTime;
+        this.candleType = candleTypeCalc();
+        this.bodySize = Math.abs(this.close - this.open);
+    }
+
+
+
+    /**
+     * Calculate candle type
+     * bear/bull
+     *
+     * @return candle type result
+     */
+    private String candleTypeCalc() {
+        String result = "";
+
+        if (this.close > this.open) {
+            result = "bull";
+        } else if (this.close < this.open) {
+            result = "bear";
+        } else {
+            result = "doji";
+        }
+
+        return result;
     }
 
     @Override
@@ -60,5 +88,42 @@ public class Candle {
                 ", openTIme=" + openTIme +
                 ", closeTime=" + closeTime +
                 '}';
+    }
+
+
+    public double getOpen() {
+        return open;
+    }
+
+    public double getClose() {
+        return close;
+    }
+
+    public double getHigh() {
+        return high;
+    }
+
+    public double getLow() {
+        return low;
+    }
+
+    public double getVolume() {
+        return volume;
+    }
+
+    public long getOpenTIme() {
+        return openTIme;
+    }
+
+    public long getCloseTime() {
+        return closeTime;
+    }
+
+    public String getCandleType() {
+        return candleType;
+    }
+
+    public double getBodySize() {
+        return bodySize;
     }
 }

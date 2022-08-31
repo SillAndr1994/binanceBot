@@ -83,4 +83,107 @@ public class ServiceFunctions {
         return candles;
     }
 
+
+    /**
+     * return candles(default=500)
+     */
+    public static ArrayList<Candle> getCandles(CandlestickInterval interval, String symbol) {
+        MarketDataClient client = new MarketDataClient(Auth.getApi_key(), Auth.getSecret_key());
+
+        List<CandlestickBar> klines = null;
+
+        try {
+            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+        } catch (ApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        ArrayList<Candle> candles = new ArrayList<>();
+
+        ArrayList<CandlestickBar> candlestickBars = new ArrayList<>();
+
+        for (CandlestickBar kline : klines) {
+            int i = 0;
+            Candle candle = new Candle(kline.getOpen(), kline.getClose(), kline.getHigh(), kline.getLow(), kline.getVolume(), kline.getOpenTime(), kline.getCloseTime());
+            candles.add(i, candle);
+            ++i;
+        }
+
+        return candles;
+    }
+
+    /**
+     * Get latest candle closed values
+     * @param interval inteval
+     * @param symbol coin symbol
+     * @return
+     */
+    public static Candle getLatestCandle(CandlestickInterval interval, String symbol) {
+        MarketDataClient client = new MarketDataClient(Auth.getApi_key(), Auth.getSecret_key());
+
+        List<CandlestickBar> klines = null;
+
+        try {
+            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+        } catch (ApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        CandlestickBar lc = klines.get(klines.size()-3);
+        Candle latestCandle = new Candle(lc.getOpen(), lc.getClose(), lc.getHigh(), lc.getLow(), lc.getVolume(), lc.getOpenTime(), lc.getCloseTime());
+
+        return latestCandle;
+
+    }
+
+    /**
+     * Get previous closed candle
+     * @param interval candle interval
+     * @param symbol candle symbol
+     * @return
+     */
+    public static Candle getPreviousCandle(CandlestickInterval interval, String symbol) {
+        MarketDataClient client = new MarketDataClient(Auth.getApi_key(), Auth.getSecret_key());
+
+        List<CandlestickBar> klines = null;
+
+        try {
+            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+        } catch (ApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        CandlestickBar pc = klines.get(klines.size()-2);
+        Candle previousCandle = new Candle(pc.getOpen(), pc.getClose(), pc.getHigh(), pc.getLow(), pc.getVolume(), pc.getOpenTime(), pc.getCloseTime());
+
+        return previousCandle;
+    }
+
+    /**
+     * Get Candles closing prices history (default=500)
+     * @param interval candle interval
+     * @param symbol candle symbol
+     * @return
+     */
+    public static List<Double> getClosingPrices(CandlestickInterval interval, String symbol) {
+        MarketDataClient client = new MarketDataClient(Auth.getApi_key(), Auth.getSecret_key());
+
+        List<CandlestickBar> klines = null;
+
+        try {
+            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+        } catch (ApiException e) {
+            throw new RuntimeException(e);
+        }
+
+        List<Double> closePriceHistory = new ArrayList<>();
+
+        for (CandlestickBar kline : klines) {
+            closePriceHistory.add(kline.getClose().doubleValue());
+        }
+
+        return closePriceHistory;
+    }
+
+
 }
