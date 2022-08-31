@@ -6,7 +6,11 @@ import com.binance4j.core.market.CandlestickBar;
 import com.binance4j.core.market.CandlestickInterval;
 import com.binance4j.market.client.MarketDataClient;
 import com.binance4j.market.kline.KlinesRequest;
+import com.binance4j.market.priceticker.PriceTicker;
+import com.binance4j.market.priceticker.PriceTickerRequest;
+import indicators.EMA;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -124,7 +128,7 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +152,7 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
@@ -171,7 +175,7 @@ public class ServiceFunctions {
         List<CandlestickBar> klines = null;
 
         try {
-            klines = client.getKlines(new KlinesRequest(symbol, interval)).execute();
+            klines = client.getKlines(new KlinesRequest(symbol.toUpperCase(), interval)).execute();
         } catch (ApiException e) {
             throw new RuntimeException(e);
         }
@@ -186,4 +190,42 @@ public class ServiceFunctions {
     }
 
 
+    /**
+     * Get ema value for latest candle
+     * @param interval
+     * @param symbol
+     * @return
+     */
+    public static double getLatestCandleEmaValue(CandlestickInterval interval, String symbol) {
+        List<Double> closePricesHistory = ServiceFunctions.getClosingPrices(interval, symbol.toUpperCase());
+        List<Double> emaValues = new ArrayList<>();
+
+        EMA ema = new EMA(closePricesHistory, 20, false);
+
+        double emaValue = ema.get();
+
+        return roundingValue(symbol, emaValue);
+
+    }
+
+
+    /**
+     * rounding value for a specific coin per binance
+     * @param symbol coin symbol
+     * @param interval coin interval
+     * @param value value for rounding
+     * @return double rounded number
+     */
+    public static double roundingValue(String symbol, double value) {
+        double closePrice = getLatestCandle(CandlestickInterval.DAILY, symbol.toUpperCase()).getClose();
+        String singsNumbers = Double.toString(closePrice);
+        singsNumbers = singsNumbers.substring(singsNumbers.indexOf(".")+1);
+        int singsCount = singsNumbers.length();
+
+        String pattern = "#" + "." + "#".repeat(singsCount);
+        DecimalFormat decimalFormat = new DecimalFormat(pattern);
+        double result = Double.valueOf(decimalFormat.format(value));
+
+        return result;
+    }
 }

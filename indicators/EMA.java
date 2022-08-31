@@ -83,14 +83,17 @@ public class EMA implements Indicator {
 
     public static void main(String[] args) {
         List<Double> closePriceHistory = ServiceFunctions.getClosingPrices(CandlestickInterval.DAILY, "BTCUSDT");
+        List<Double> emaValues = new ArrayList<>();
 
         EMA ema = new EMA(closePriceHistory, 20, true);
 
         for (Double aDouble : closePriceHistory) {
             ema.update(aDouble);
-            System.out.println(ema.currentEMA);
+            emaValues.add(ema.currentEMA);
         }
 
+        double emaValue = emaValues.get(emaValues.size() - 2);
+        System.out.println(emaValue);
     }
 
 }
