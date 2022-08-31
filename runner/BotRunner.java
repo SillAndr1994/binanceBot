@@ -23,9 +23,15 @@ public class BotRunner {
         client.onMessage(cb -> {
             if (cb.getIsBarFinal()) {
                 ArrayList<String> growCoins = getGrowCoins(3);
-                System.out.println(growCoins);
-                TradingStrategy strategy = new TradingStrategy(interval);
-                ArrayList<String> processedSymbols = strategy.checkTradingRules(growCoins);
+
+                TradingStrategy strategy = null;
+                ArrayList<String> processedSymbols = null;
+
+                if (growCoins.size() != 0) {
+                    strategy = new TradingStrategy(interval);
+                    processedSymbols = strategy.checkTradingRules(growCoins);
+                }
+
                 System.out.println(processedSymbols);
             }
         });client.open();
