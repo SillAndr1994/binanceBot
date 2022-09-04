@@ -19,12 +19,13 @@ import java.util.List;
  */
 public class BotRunner {
     public static void main(String[] args) {
-        CandlestickInterval interval = CandlestickInterval.THREE_MINUTES;
+        CandlestickInterval interval = CandlestickInterval.FIVE_MINUTES;
 
         WebsocketCandlestickClient client = new WebsocketCandlestickClient("BTCUSDT".toUpperCase(), interval);
 
         client.onMessage(cb -> {
             if (cb.getIsBarFinal()) {
+                System.out.println("Candle closed");
                 ArrayList<String> growCoins = getGrowCoins(3);
 
                 TradingStrategy strategy = null;

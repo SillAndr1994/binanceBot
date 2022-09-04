@@ -153,8 +153,8 @@ public class Candle implements CandleComparable{
         boolean result = false;
 
         if (this.candleType.equals("bull") && candle.candleType.equals("bear")
-            && (this.candleBodySize > candle.candleBodySize)
-            && (this.volume > candle.volume && this.volume < candle.volume*2) && this.topShadowSize < this.candleBodySize)
+            && (this.candleBodySize > candle.candleBodySize && this.candleBodySize < candle.candleBodySize * 20)
+            && this.volume >= candle.volume*2 && this.topShadowSize < this.candleBodySize && this.close > candle.open && candle.open != candle.close)
 
             result = true;
 
