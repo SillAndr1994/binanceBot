@@ -14,9 +14,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+/**
+ * Simple binance bot
+ */
 public class BotRunner {
     public static void main(String[] args) {
-        CandlestickInterval interval = CandlestickInterval.FIVE_MINUTES;
+        CandlestickInterval interval = CandlestickInterval.THREE_MINUTES;
 
         WebsocketCandlestickClient client = new WebsocketCandlestickClient("BTCUSDT".toUpperCase(), interval);
 
@@ -32,7 +35,9 @@ public class BotRunner {
                     processedSymbols = strategy.checkTradingRules(growCoins);
                 }
 
-                System.out.println(processedSymbols);
+                if (processedSymbols != null && processedSymbols.size() != 0) {
+                    System.out.println(processedSymbols);
+                }
             }
         });client.open();
     }

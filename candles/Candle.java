@@ -17,7 +17,7 @@ public class Candle implements CandleComparable{
     private Date openTIme;
     private Date closeTime;
     private String candleType;
-    private double bodySize;
+    private double candleBodySize;
     private double topShadowSize;
     private double bottomShadowSize;
     public Candle(double open, double close, double high, double low, double volume, long openTIme, long closeTime) {
@@ -29,7 +29,7 @@ public class Candle implements CandleComparable{
         this.openTIme = new Date(new Timestamp(openTIme).getTime());
         this.closeTime = new Date(new Timestamp(closeTime).getTime());
         this.candleType = candleTypeCalc();
-        this.bodySize = Math.abs(this.close - this.open);
+        this.candleBodySize = Math.abs(this.close - this.open);
         this.topShadowSize = Math.abs(this.high - this.close);
         this.bottomShadowSize = Math.abs(this.open - this.low);
     }
@@ -44,7 +44,7 @@ public class Candle implements CandleComparable{
         this.openTIme = new Date(new Timestamp(openTIme).getTime());
         this.closeTime = new Date(new Timestamp(closeTime).getTime());
         this.candleType = candleTypeCalc();
-        this.bodySize = Math.abs(this.close - this.open);
+        this.candleBodySize = Math.abs(this.close - this.open);
         this.topShadowSize = Math.abs(this.high - this.close);
         this.bottomShadowSize = Math.abs(this.open - this.low);
     }
@@ -130,8 +130,8 @@ public class Candle implements CandleComparable{
         return candleType;
     }
 
-    public double getBodySize() {
-        return bodySize;
+    public double getCandleBodySize() {
+        return candleBodySize;
     }
 
     public double getTopShadowSize() {
@@ -142,14 +142,21 @@ public class Candle implements CandleComparable{
         return bottomShadowSize;
     }
 
+
+    /**
+     * Comparison of one candle with another to check the condition
+     * @param candle class object Candle
+     * @return boolean true/false
+     */
     @Override
     public boolean compare(Candle candle) {
         boolean result = false;
 
-        if (this.candleType.equals("bull") && candle.candleType.equals("bear") && this.bottomShadowSize < this.bodySize
-                && this.volume >= candle.volume * 2 && this.bodySize < this.bodySize * 15 && this.close > candle.open && this.bodySize > candle.bodySize) {
+        if (this.candleType.equals("bull") && candle.candleType.equals("bear")
+            && (this.candleBodySize > candle.candleBodySize)
+            && (this.volume > candle.volume && this.volume < candle.volume*2) && this.topShadowSize < this.candleBodySize)
+
             result = true;
-        }
 
         return result;
     }

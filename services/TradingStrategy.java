@@ -22,52 +22,17 @@ public class TradingStrategy {
     public ArrayList<String> checkTradingRules(ArrayList<String> symbols) {
         ArrayList<String> result = new ArrayList<>();
 
-        for (int i = 0; i < symbols.size(); i++) {
-            if (checkAbsorptionModel(symbols.get(i))) {
-                if (checkEmaValue(symbols.get(i))) {
-                    result.add(symbols.get(i));
+        for (String symbol : symbols) {
+            List<Candle> candles = ServiceFunctions.getTwoLatestCandles(this.interval, symbol);
+            double ema20 = ServiceFunctions.getLatestCandleEmaValue(this.interval, symbol, 20);
+            if (candles.get(1).compare(candles.get(0))) {
+                if (candles.get(1).getOpen() > ema20) {
+                    result.add(symbol);
                 }
             }
         }
 
         return result;
     }
-
-    /**
-     * checking the bullish engulfing pattern and matching candle parameters
-     * @return
-     */
-    private boolean checkAbsorptionModel(String symbol) {
-        boolean result = false;
-
-        List<Candle> candles = ServiceFunctions.getTwoLatestCandles(this.interval, symbol);
-
-        if (candles.get(0).compare(candles.get(1))) {
-            result = true;
-        }
-
-        return result;
-    }
-
-
-    /**
-     * Check close value > ema
-     * @param symbol
-     * @return
-     */
-    private boolean checkEmaValue(String symbol) {
-        boolean result = false;
-
-        double ema = ServiceFunctions.getLatestCandleEmaValue(this.interval, symbol); // get latest candle ema value
-        double open = ServiceFunctions.roundingValue(symbol, ServiceFunctions.getLatestCandle(this.interval, symbol).getOpen()); // get latestCandle open price
-
-        if (open >= ema) {
-            result = true;
-        }
-
-        return result;
-
-    }
-
 
 }

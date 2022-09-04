@@ -196,11 +196,11 @@ public class ServiceFunctions {
      * @param symbol
      * @return
      */
-    public static double getLatestCandleEmaValue(CandlestickInterval interval, String symbol) {
+    public static double getLatestCandleEmaValue(CandlestickInterval interval, String symbol, int period) {
         List<Double> closePricesHistory = ServiceFunctions.getClosingPrices(interval, symbol.toUpperCase());
         List<Double> emaValues = new ArrayList<>();
 
-        EMA ema = new EMA(closePricesHistory, 20, false);
+        EMA ema = new EMA(closePricesHistory, period, false);
 
         double emaValue = ema.get();
 
@@ -226,10 +226,5 @@ public class ServiceFunctions {
         double result = Double.valueOf(decimalFormat.format(value));
 
         return result;
-    }
-
-    public static void main(String[] args) {
-        double ema = getLatestCandleEmaValue(CandlestickInterval.DAILY, "BTCUSDT");
-        System.out.println(ema);
     }
 }
