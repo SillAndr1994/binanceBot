@@ -1,11 +1,7 @@
 package indicators;
 
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import candles.Candle;
-import com.binance4j.core.market.CandlestickInterval;
-import services.ServiceFunctions;
 
 /**
  * Calculate ema value for last close candle
@@ -79,21 +75,6 @@ public class EMA implements Indicator {
 
     public int getPeriod() {
         return period;
-    }
-
-    public static void main(String[] args) {
-        List<Double> closePriceHistory = ServiceFunctions.getClosingPrices(CandlestickInterval.DAILY, "BTCUSDT");
-        List<Double> emaValues = new ArrayList<>();
-
-        EMA ema = new EMA(closePriceHistory, 20, true);
-
-        for (Double aDouble : closePriceHistory) {
-            ema.update(aDouble);
-            emaValues.add(ema.currentEMA);
-        }
-
-        double emaValue = emaValues.get(emaValues.size() - 2);
-        System.out.println(emaValue);
     }
 
 }
